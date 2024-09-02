@@ -16,13 +16,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: ${{ matrix.node }}
-          cache: pnpm
-      - run: corepack enable
-      - run: corepack install
-      - run: pnpm install
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
       - run: NUXT_APP_BASE_URL=/my-pull-requests/ pnpm generate
       - uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
