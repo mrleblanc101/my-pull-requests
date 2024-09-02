@@ -34,7 +34,7 @@ jobs:
       - run: NUXT_APP_BASE_URL=/my-pull-requests/ pnpm generate
       - uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.NUXT_GITHUB_TOKEN }}
           BRANCH: gh-pages
           FOLDER: '.output/public'
           CLEAN: true
