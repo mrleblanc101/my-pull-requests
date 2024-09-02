@@ -7,16 +7,10 @@ export default defineNuxtConfig({
 
   // https://nuxt.com/modules
   modules: [
-    // '@nuxthub/core',
     '@nuxt/eslint',
     '@nuxt/ui',
     '@vueuse/nuxt',
   ],
-
-//   // https://hub.nuxt.com/docs/getting-started/installation#options
-//   hub: {
-//     cache: true,
-//   },
 
   // https://eslint.nuxt.com
   eslint: {
