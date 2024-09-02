@@ -15,16 +15,20 @@ jobs:
         node: [ 20 ]
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
         with:
-          version: 9
-      - name: Use Node.js ${{ matrix.node-version }}
+          run_install: false
+
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
           cache: 'pnpm'
+
       - name: Install dependencies
         run: pnpm install
       - run: NUXT_APP_BASE_URL=/my-pull-requests/ pnpm generate
