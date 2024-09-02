@@ -32,6 +32,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - run: NUXT_APP_BASE_URL=/my-pull-requests/ pnpm generate
+        env:
+          NUXT_GITHUB_TOKEN: ${{ secrets.NUXT_GITHUB_TOKEN }}
       - uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
