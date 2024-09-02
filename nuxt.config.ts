@@ -1,7 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-console.log('GITHUB_TOKEN',process.env.GITHUB_TOKEN)
-console.log('NUXT_GITHUB_TOKEN',process.env.NUXT_GITHUB_TOKEN)
-
 export default defineNuxtConfig({
   compatibilityDate: '2024-07-30',
 
