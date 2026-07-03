@@ -1,6 +1,4 @@
-import { getQuery } from 'h3'
-
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   const octokit = useOctokit()
   // Fetch user from token
   const userResponse = await octokit.request('GET /user')
@@ -10,16 +8,16 @@ export default defineEventHandler(async (event) => {
     avatar: userResponse.data.avatar_url,
   }
   const hidePrivateRepos = process.env.HIDE_PRIVATE_REPOS === 'true'
-  const excludeRepos = process.env.EXCLUDE_REPOS
-  const excludeOrgs = process.env.EXCLUDE_ORGS
+  const excludeRepos = process.env.EXCLUDE_REPOS?.split(',') ?? []
+  const excludeOrgs = process.env.EXCLUDE_ORGS?.split(',') ?? []
 
   // Fetch pull requests from user
   const queryParts = [
     `type:pr`,
     `author:"${user.username}"`,
     hidePrivateRepos ? 'is:public' : null,
-    excludeRepos ? `-repo:${excludeRepos}` : null,
-    excludeOrgs ? `-org:${excludeOrgs}` : null,
+    ...excludeRepos.map(repo => `-repo:${repo}`),
+    ...excludeOrgs.map(org => `-org:${org}`),
   ].filter(Boolean)
 
   const { data } = await octokit.request('GET /search/issues', {
