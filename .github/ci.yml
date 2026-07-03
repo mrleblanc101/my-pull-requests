@@ -1,0 +1,44 @@
+name: gh-pages
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+  - cron: "0 0 * * *"
+
+jobs:
+  deploy:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        node: [ 20 ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+      - run: NUXT_APP_BASE_URL=/my-pull-requests/ pnpm generate
+        env:
+          NUXT_GITHUB_TOKEN: ${{ secrets.NUXT_GITHUB_TOKEN }}
+      - uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: '.output/public'
+          CLEAN: true
