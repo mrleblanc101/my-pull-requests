@@ -31,7 +31,22 @@ cp .env.example .env
 Create a GitHub token with no special scope on [GitHub](https://github.com/settings/personal-access-tokens/new) and set it in the `.env` file:
 
 ```bash
-NUXT_GITHUB_TOKEN=your-github-token
+NUXT_GITHUB_TOKEN=<TOKEN>
+```
+
+If you want to hide private repo:
+```
+HIDE_PRIVATE_REPOS=<BOOLEAN> # Boolean
+```
+
+If you want to exclude specifics orgs:
+```
+EXCLUDE_ORGS=<COMMA_SEPERATED_LIST>
+```
+
+If you want to exclude specifics repos:
+```
+EXCLUDE_ORGS=<COMMA_SEPERATED_LIST>
 ```
 
 ## Development Server
