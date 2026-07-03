@@ -14,7 +14,8 @@ export default defineEventHandler(async () => {
 
   // Fetch pull requests from user
   const queryParts = [
-    `type:pr`,
+    `is:pr`,
+    '(is:open+OR+is:merged)',
     `author:"${user.username}"`,
     hidePrivateRepos ? 'is:public' : null,
     ...excludeRepos.map(repo => `-repo:${repo}`),
@@ -28,12 +29,11 @@ export default defineEventHandler(async () => {
     advanced_search: 'true',
   })
 
-  // Filter out closed PRs that are not merged
-  const filteredPrs = data.items.filter(pr => !(pr.state === 'closed' && !pr.pull_request?.merged_at))
+  console.log(data.items.length)
 
   const prs: PullRequest[] = []
   // For each PR, fetch the repository details
-  for (const pr of filteredPrs) {
+  for (const pr of data.items) {
     const [owner, name] = pr.repository_url.split('/').slice(-2)
     const repo = await fetchRepo(owner!, name!)
 
