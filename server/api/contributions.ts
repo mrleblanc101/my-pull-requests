@@ -1,4 +1,6 @@
-export default defineEventHandler(async () => {
+import { getQuery } from 'h3'
+
+export default defineEventHandler(async (event) => {
   const octokit = useOctokit()
   // Fetch user from token
   const userResponse = await octokit.request('GET /user')
@@ -8,12 +10,20 @@ export default defineEventHandler(async () => {
     avatar: userResponse.data.avatar_url,
   }
   const hidePrivateRepos = process.env.HIDE_PRIVATE_REPOS === 'true'
+  const excludeRepos = process.env.EXCLUDE_REPOS
+  const excludeOrgs = process.env.EXCLUDE_ORGS
+
   // Fetch pull requests from user
+  const queryParts = [
+    `type:pr`,
+    `author:"${user.username}"`,
+    hidePrivateRepos ? 'is:public' : null,
+    excludeRepos ? `-repo:${excludeRepos}` : null,
+    excludeOrgs ? `-org:${excludeOrgs}` : null,
+  ].filter(Boolean)
+
   const { data } = await octokit.request('GET /search/issues', {
-    // To exclude the pull requests to your repositories
-    // q: `type:pr+author:"${user.username}"+-user:"${user.username}"`,
-    // To include the pull requests to your repositories
-    q: `type:pr+author:"${user.username}"${hidePrivateRepos ? '+is:public' : ''}`,
+    q: queryParts.join('+'),
     per_page: 50,
     page: 1,
     advanced_search: 'true',
