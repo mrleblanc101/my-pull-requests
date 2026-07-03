@@ -4,6 +4,7 @@
   "packageManager": "pnpm@10.16.1",
   "scripts": {
     "dev": "nuxi dev",
+    "generate": "nuxi generate",
     "build": "nuxi build",
     "postinstall": "nuxi prepare",
     "lint": "eslint .",
