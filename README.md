@@ -34,9 +34,14 @@ Create a GitHub token with no special scope on [GitHub](https://github.com/setti
 NUXT_GITHUB_TOKEN=<TOKEN>
 ```
 
+If you want to customize the number of displayed PRs (Default: 50):
+```bash
+PR_COUNT=<NUMBER>
+```
+
 If you want to hide private repos:
 ```bash
-HIDE_PRIVATE_REPOS=<BOOLEAN> # Boolean
+HIDE_PRIVATE_REPOS=<BOOLEAN>
 ```
 
 If you want to exclude specifics orgs:

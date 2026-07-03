@@ -10,6 +10,7 @@ export default defineEventHandler(async () => {
   const hidePrivateRepos = process.env.HIDE_PRIVATE_REPOS === 'true'
   const excludeRepos = process.env.EXCLUDE_REPOS?.split(',').map(repo => repo.trim()).filter(Boolean) ?? []
   const excludeOrgs = process.env.EXCLUDE_ORGS?.split(',').map(org => org.trim()).filter(Boolean) ?? []
+  const prCount = Number(process.env.PR_COUNT ?? 50)
 
   // Fetch pull requests from user
   const queryParts = [
@@ -22,7 +23,7 @@ export default defineEventHandler(async () => {
 
   const { data } = await octokit.request('GET /search/issues', {
     q: queryParts.join('+'),
-    per_page: 50,
+    per_page: prCount,
     page: 1,
     advanced_search: 'true',
   })
