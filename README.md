@@ -35,17 +35,17 @@ NUXT_GITHUB_TOKEN=<TOKEN>
 ```
 
 If you want to hide private repos:
-```
+```bash
 HIDE_PRIVATE_REPOS=<BOOLEAN> # Boolean
 ```
 
 If you want to exclude specifics orgs:
-```
+```bash
 EXCLUDE_ORGS=<COMMA_SEPERATED_LIST>
 ```
 
 If you want to exclude specifics repos:
-```
+```bash
 EXCLUDE_ORGS=<COMMA_SEPERATED_LIST>
 ```
 
