@@ -20,10 +20,11 @@ export async function fetchRepo(owner: string, name: string) {
     return RepoCache.get(`${owner}/${name}`)
   }
   // Fetch repository details to get owner type
-  const { data } = await useOctokit().request('GET /repos/{owner}/{name}', {
+  // Can 404 if the repo is deleted, renamed, or not visible to the token
+  const data = await useOctokit().request('GET /repos/{owner}/{name}', {
     owner,
     name,
-  })
+  }).then(res => res.data).catch(() => null)
 
   RepoCache.set(`${owner}/${name}`, data)
   return data

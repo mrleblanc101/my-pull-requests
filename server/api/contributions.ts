@@ -8,25 +8,36 @@ export default defineEventHandler(async () => {
     avatar: userResponse.data.avatar_url,
   }
   const hidePrivateRepos = process.env.HIDE_PRIVATE_REPOS === 'true'
+  const excludeRepos = process.env.EXCLUDE_REPOS?.split(',').map(repo => repo.trim()).filter(Boolean) ?? []
+  const excludeOrgs = process.env.EXCLUDE_ORGS?.split(',').map(org => org.trim()).filter(Boolean) ?? []
+  const prCount = Number(process.env.PR_COUNT ?? 50)
+
   // Fetch pull requests from user
+  const queryParts = [
+    `is:pr`,
+    '(is:open+OR+is:merged)',
+    `author:"${user.username}"`,
+    hidePrivateRepos ? 'is:public' : null,
+    ...excludeRepos.map(repo => `-repo:${repo}`),
+    ...excludeOrgs.map(org => `-org:${org}`),
+  ].filter(Boolean)
+
   const { data } = await octokit.request('GET /search/issues', {
-    // To exclude the pull requests to your repositories
-    // q: `type:pr+author:"${user.username}"+-user:"${user.username}"`,
-    // To include the pull requests to your repositories
-    q: `type:pr+author:"${user.username}"${hidePrivateRepos ? '+is:public' : ''}`,
-    per_page: 50,
+    q: queryParts.join('+'),
+    per_page: prCount,
     page: 1,
     advanced_search: 'true',
   })
 
-  // Filter out closed PRs that are not merged
-  const filteredPrs = data.items.filter(pr => !(pr.state === 'closed' && !pr.pull_request?.merged_at))
+  console.log(data.items.length)
 
   const prs: PullRequest[] = []
   // For each PR, fetch the repository details
-  for (const pr of filteredPrs) {
+  for (const pr of data.items) {
     const [owner, name] = pr.repository_url.split('/').slice(-2)
     const repo = await fetchRepo(owner!, name!)
+    // Skip PRs whose repo is inaccessible (deleted, renamed, or hidden from the token)
+    if (!repo) continue
 
     prs.push({
       repo: `${owner}/${name}`,
